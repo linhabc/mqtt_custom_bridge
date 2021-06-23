@@ -1,11 +1,24 @@
 const redis = require("redis");
 const { promisifyAll } = require("bluebird");
+var { redisHost, redisPort } = require("./config/config.js");
+
+// sentinel
+// const Redis = require("ioredis");
+// const redis = new Redis({
+//   sentinels: [
+//     { host: "localhost", port: 26379 },
+//     { host: "localhost", port: 26380 },
+//   ],
+//   name: "myMaster",
+// });
+
+// redis.set("foo", "bar");
 
 promisifyAll(redis);
 
 const options = {
-  host: "127.0.0.1",
-  port: "6379",
+  host: redisHost,
+  port: redisPort,
 };
 
 const redisClient = redis.createClient(options);

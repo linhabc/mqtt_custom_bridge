@@ -1,5 +1,11 @@
 var mqtt = require("mqtt");
 var aedes = require("./aedes.js");
+var {
+  mainfluxHost,
+  defaultUserName,
+  defaultPassword,
+  defaultChannel,
+} = require("./config/config.js");
 
 class Client {
   constructor(clientConfig) {
@@ -10,8 +16,6 @@ class Client {
   createClient() {
     var self = this;
     var options = {
-      port: 1883,
-      host: "localhost",
       clientId: this.clientConfig.clientId,
       username: this.clientConfig.username,
       password: this.clientConfig.password,
@@ -19,7 +23,7 @@ class Client {
       clean: true,
       encoding: "utf8",
     };
-    this.client = mqtt.connect("mqtt://localhost:1883", options);
+    this.client = mqtt.connect(mainfluxHost, options);
 
     this.client.on("connect", function () {
       self.client.subscribe(self.clientConfig.channel);
