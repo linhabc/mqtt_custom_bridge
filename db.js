@@ -1,27 +1,36 @@
-const redis = require("redis");
+// const redis = require("redis");
 const { promisifyAll } = require("bluebird");
-var { redisHost, redisPort } = require("./config/config.js");
+var {
+  redisSentinel1,
+  redisSentinelPort1,
+  redisSentinel2,
+  redisSentinelPort2,
+  redisSentinel3,
+  redisSentinelPort3,
+} = require("./config/config.js");
 
 // sentinel
-// const Redis = require("ioredis");
-// const redis = new Redis({
-//   sentinels: [
-//     { host: "localhost", port: 26379 },
-//     { host: "localhost", port: 26380 },
-//   ],
-//   name: "myMaster",
-// });
+const Redis = require("ioredis");
 
-// redis.set("foo", "bar");
+const redis = new Redis({
+  sentinels: [
+    { host: redisSentinel1, port: redisSentinelPort1 },
+    { host: redisSentinel2, port: redisSentinelPort2 },
+    { host: redisSentinel3, port: redisSentinelPort3 },
+  ],
+  name: "myMaster",
+});
 
 promisifyAll(redis);
 
-const options = {
-  host: redisHost,
-  port: redisPort,
-};
+// redis.set("foo", "bar");
 
-const redisClient = redis.createClient(options);
+// const options = {
+//   host: redisHost,
+//   port: redisPort,
+// };
+
+// const redisClient = redis.createClient(options);
 
 const setKeyAndValue = async (key, value) => {
   await redisClient.setAsync(key, JSON.stringify(value));
