@@ -23,6 +23,15 @@ const redis = new Redis({
 
 promisifyAll(redis);
 
+const setKeyAndValue = async (key, value) => {
+  await redis.setAsync(key, JSON.stringify(value));
+};
+
+const getValueByKey = async (key) => {
+  var res = await redis.getAsync(key);
+  return JSON.parse(res);
+};
+
 // redis.set("foo", "bar");
 
 // const options = {
@@ -32,14 +41,14 @@ promisifyAll(redis);
 
 // const redisClient = redis.createClient(options);
 
-const setKeyAndValue = async (key, value) => {
-  await redisClient.setAsync(key, JSON.stringify(value));
-};
+// const setKeyAndValue = async (key, value) => {
+//   await redisClient.setAsync(key, JSON.stringify(value));
+// };
 
-const getValueByKey = async (key) => {
-  var res = await redisClient.getAsync(key);
-  return JSON.parse(res);
-};
+// const getValueByKey = async (key) => {
+//   var res = await redisClient.getAsync(key);
+//   return JSON.parse(res);
+// };
 
 module.exports = {
   setKeyAndValue,
