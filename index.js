@@ -31,7 +31,7 @@ aedes.on("client", async (client) => {
   console.log("Client: " + client.id + " connected to mqtt_node");
   // moi khi co mot ket noi moi den adapter -> tao mot client de ket noi den mainflux
   if (!clientSet.hasOwnProperty(client.id)) {
-    const clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
+    let clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
 
     if (clientConfigRes == null) {
       clientConfigRes = {
