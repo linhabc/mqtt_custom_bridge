@@ -39,8 +39,7 @@ aedes.on("client", async (client) => {
         username: defaultUserName,
         password: defaultPassword,
         channel: defaultChannel,
-        channelClientSub: defaultChannel + "/h/sub",
-        channelClientPub: defaultChannel + "/h/pub",
+        // channelClient: "/h/2",
       };
     }
 
@@ -65,6 +64,8 @@ aedes.on("publish", function (packet, client) {
 
 aedes.on("subscribe", function (subscriptions, client) {
   if (client) {
+    clientSet[client.id].clientConfig.channelClient = subscriptions[0].topic;
+    console.log(subscriptions[0].topic);
     console.log("subscribe from client: ", subscriptions, client.id);
   }
 });

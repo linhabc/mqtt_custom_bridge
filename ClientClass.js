@@ -47,14 +47,14 @@ class Client {
         console.log("message on message: ", message.toString());
       }
 
-      if (packet && topic === self.clientConfig.channelClientPub) {
+      if (packet && topic === self.clientConfig.channelClient) {
         self.client.publish(self.clientConfig.channel, packet.payload);
       } else if (packet && topic === self.clientConfig.channel) {
         console.log("Publish message to device: ", packet.payload.toString());
         aedes.publish({
           cmd: "publish",
           qos: 0,
-          topic: self.clientConfig.channelClientSub,
+          topic: self.clientConfig.channelClient,
           payload: packet.payload,
           retain: false,
         });
