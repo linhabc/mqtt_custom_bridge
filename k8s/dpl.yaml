@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt-tttm-dplm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqtt-tttm
+  template:
+    metadata:
+      labels:
+        app: mqtt-tttm
+    spec:
+      containers:
+        - name: mqtt-tttm
+          image: linhabc/mainflux-mqtt-tttm:latest
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 1886
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: mqtt-tttm-config

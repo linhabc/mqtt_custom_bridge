@@ -7,6 +7,7 @@ module.exports = {
   defaultPassword: process.env.PASSWORD_DEFAULT,
   defaultChannel: process.env.CHANNEL_DEFAULT,
 
+  redisMaster: process.env.REDIS_MASTER,
   redisSentinel1: process.env.REDIS_SENTINEL_1,
   redisSentinelPort1: process.env.REDIS_SENTINEL_PORT_1,
   redisSentinel2: process.env.REDIS_SENTINEL_2,

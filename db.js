@@ -1,6 +1,7 @@
 // const redis = require("redis");
 const { promisifyAll } = require("bluebird");
 var {
+  redisMaster,
   redisSentinel1,
   redisSentinelPort1,
   redisSentinel2,
@@ -18,7 +19,7 @@ const redis = new Redis({
     { host: redisSentinel2, port: redisSentinelPort2 },
     { host: redisSentinel3, port: redisSentinelPort3 },
   ],
-  name: "myMaster",
+  name: redisMaster,
 });
 
 promisifyAll(redis);
