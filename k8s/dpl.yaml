@@ -1,24 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mqtt-tttm-dplm
+  name: mqtt-adapter-nodejs-dplm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mqtt-tttm
+      app: mqtt-adapter-nodejs
   template:
     metadata:
       labels:
-        app: mqtt-tttm
+        app: mqtt-adapter-nodejs
     spec:
       containers:
-        - name: mqtt-tttm
-          image: linhabc/mainflux-mqtt-tttm:latest
+        - name: mqtt-adapter-nodejs
+          image: linhabc/mqtt_adpter_nodejs:latest
           imagePullPolicy: "IfNotPresent"
           ports:
-            - containerPort: 1886
-            - containerPort: 8080
+            - containerPort: 1881
           envFrom:
             - configMapRef:
-                name: mqtt-tttm-config
+                name: mqtt-adapter-nodejs-config

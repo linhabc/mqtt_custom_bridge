@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mqtt-tttm-svc
+  name: mqtt-adapter-nodejs-svc
   labels:
-    app: mqtt-tttm
+    app: mqtt-adapter-nodejs
 spec:
   type: NodePort
   ports:
-    - port: 1886
-      name: mqtt-port
-    - port: 8080
-      name: htttp-port
+    - port: 1881
+      name: mqtt-adapter-nodejs-port
   selector:
     app: mqtt-tttm
