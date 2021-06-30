@@ -9,5 +9,6 @@ spec:
   ports:
     - port: 1881
       name: mqtt-adapter-nodejs-port
+      protocol: TCP
   selector:
-    app: mqtt-tttm
+    app: mqtt-adapter-nodejs
