@@ -65,6 +65,11 @@ aedes.on("publish", function (packet, client) {
 aedes.on("subscribe", function (subscriptions, client) {
   if (client) {
     clientSet[client.id].clientConfig.channelClient = subscriptions[0].topic;
+
+    // adding client topic to the end of
+    clientSet[client.id].clientConfig.channelSending =
+      clientSet[client.id].clientConfig.channel + subscriptions[0].topic;
+
     console.log(subscriptions[0].topic);
     console.log("subscribe from client: ", subscriptions, client.id);
   }
