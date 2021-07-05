@@ -26,7 +26,7 @@ class Client {
     this.client = mqtt.connect(mainfluxHost, options);
 
     this.client.on("connect", function () {
-      self.client.subscribe(self.clientConfig.channel);
+      self.client.subscribe(self.clientConfig.channel + "/#");
 
       // self.client.publish(self.clientConfig.channel, "Hello from client A");
 
@@ -47,8 +47,10 @@ class Client {
         console.log("message on message: ", message.toString());
       }
 
-      if (packet && topic === self.clientConfig.channel) {
-        console.log(packet.cmd);
+      const channelClient =
+        self.clientConfig.channel + self.clientConfig.channelClient;
+      console.log("channelCLient: " + channelClient);
+      if (packet && topic === channelClient) {
         console.log("Publish message to device: ", packet.payload.toString());
         aedes.publish({
           cmd: "publish",

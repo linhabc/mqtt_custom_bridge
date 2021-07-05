@@ -68,9 +68,11 @@ aedes.on("subscribe", function (subscriptions, client) {
 
     // adding client topic to the end of
     clientSet[client.id].clientConfig.channelSending =
-      clientSet[client.id].clientConfig.channel + subscriptions[0].topic;
+      clientSet[client.id].clientConfig.channel +
+      subscriptions[0].topic +
+      "/client";
 
-    console.log(subscriptions[0].topic);
+    console.log(clientSet[client.id]);
     console.log("subscribe from client: ", subscriptions, client.id);
   }
 });
