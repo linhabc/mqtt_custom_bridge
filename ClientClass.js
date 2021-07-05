@@ -17,8 +17,8 @@ class Client {
     var self = this;
     var options = {
       clientId: this.clientConfig.clientId,
-      username: this.clientConfig.username,
-      password: this.clientConfig.password,
+      // username: this.clientConfig.username,
+      // password: this.clientConfig.password,
       reconnectPeriod: 1000,
       clean: true,
       encoding: "utf8",
@@ -26,7 +26,7 @@ class Client {
     this.client = mqtt.connect(mainfluxHost, options);
 
     this.client.on("connect", function () {
-      self.client.subscribe(self.clientConfig.channel + "/#");
+      self.client.subscribe(self.clientConfig.channel);
 
       // self.client.publish(self.clientConfig.channel, "Hello from client A");
 
@@ -47,15 +47,12 @@ class Client {
         console.log("message on message: ", message.toString());
       }
 
-      const channelClient =
-        self.clientConfig.channel + self.clientConfig.channelClient;
-      console.log("channelCLient: " + channelClient);
-      if (packet && topic === channelClient) {
+      if (packet && topic === self.clientConfig.channel) {
         console.log("Publish message to device: ", packet.payload.toString());
         aedes.publish({
           cmd: "publish",
           qos: 0,
-          topic: self.clientConfig.channelClient,
+          topic: self.clientConfig.channel,
           payload: packet.payload,
           retain: false,
         });
