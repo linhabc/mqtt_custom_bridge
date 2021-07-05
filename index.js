@@ -27,28 +27,8 @@ var {
 
 let clientSet = {};
 
-aedes.on("client", async (client) => {
+aedes.on("client",  (client) => {
   console.log("Client: " + client.id + " connected to mqtt_node");
-  // moi khi co mot ket noi moi den adapter -> tao mot client de ket noi den mainflux
-  if (!clientSet.hasOwnProperty(client.id)) {
-    let clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
-
-    if (clientConfigRes == null) {
-      clientConfigRes = {
-        clientId: client.id,
-        // username: defaultUserName,
-        // password: defaultPassword,
-        channel: defaultChannel,
-        // channelClient: "/h/2",
-      };
-    }
-
-    let newClient = new Client(clientConfigRes);
-    newClient.createClient();
-    clientSet[client.id] = newClient;
-  } else {
-    console.log("Client with id: " + client.id + " already exist");
-  }
 });
 
 // client publish message to adapter
@@ -62,14 +42,32 @@ aedes.on("publish", function (packet, client) {
   }
 });
 
-aedes.on("subscribe", function (subscriptions, client) {
+aedes.on("subscribe", async function (subscriptions, client) {
   if (client) {
-    clientSet[client.id].clientConfig.channel = subscriptions[0].topic;
-
-    // adding client topic to the end of
-    clientSet[client.id].clientConfig.channelSending =
-      subscriptions[0].topic +
-      "/client";
+    if (!clientSet.hasOwnProperty(client.id)) {
+      let clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
+  
+      if (clientConfigRes == null) {
+        clientConfigRes = {
+          clientId: client.id,
+          // username: defaultUserName,
+          // password: defaultPassword,
+          channel: subscriptions[0].topic,
+          // channelClient: "/h/2",
+        };
+      }
+  
+      let newClient = new Client(clientConfigRes);
+      newClient.createClient();
+      clientSet[client.id] = newClient;
+      clientSet[client.id].clientConfig.channel = subscriptions[0].topic;
+      // adding client topic to the end of
+      clientSet[client.id].clientConfig.channelSending =
+        subscriptions[0].topic +
+        "/client";
+    } else {
+      console.log("Client with id: " + client.id + " already exist");
+    }
 
     console.log(clientSet[client.id]);
     console.log("subscribe from client: ", subscriptions, client.id);
