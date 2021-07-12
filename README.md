@@ -1,0 +1,1 @@
+docker run --env-file ./env.list -p 1881:1881 linhabc/mqtt_custom_bridge:latest

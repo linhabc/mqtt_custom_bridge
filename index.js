@@ -17,7 +17,7 @@ var {
 //     clientId: "394d1824-e86d-429a-9213-be9b10a82f3b",
 //     username: "394d1824-e86d-429a-9213-be9b10a82f3b",
 //     password: "c46e7735-d5dc-4346-aa00-21177795b008",
-//     channel: "/channels/cd0d0307-9039-4a13-adb3-31d6d67a4787/messages",
+//     topic: "/channels/cd0d0307-9039-4a13-adb3-31d6d67a4787/messages",
 //     channelClientSub: defaultChannel + "/h/sub",
 //     channelClientPub: defaultChannel + "/h/pub",
 //   });
@@ -27,7 +27,7 @@ var {
 
 let clientSet = {};
 
-aedes.on("client",  (client) => {
+aedes.on("client", (client) => {
   console.log("Client: " + client.id + " connected to mqtt_node");
 });
 
@@ -44,32 +44,31 @@ aedes.on("publish", function (packet, client) {
 
 aedes.on("subscribe", async function (subscriptions, client) {
   if (client) {
+    let clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
+
+    if (clientConfigRes == null) {
+      clientConfigRes = {
+        clientId: client.id,
+        topic: subscriptions[0].topic,
+        // username: defaultUserName,
+        // password: defaultPassword,
+      };
+    }
+
     if (!clientSet.hasOwnProperty(client.id)) {
-      let clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
-  
-      if (clientConfigRes == null) {
-        clientConfigRes = {
-          clientId: client.id,
-          // username: defaultUserName,
-          // password: defaultPassword,
-          channel: subscriptions[0].topic,
-          // channelClient: "/h/2",
-        };
-      }
-  
       let newClient = new Client(clientConfigRes);
       newClient.createClient();
       clientSet[client.id] = newClient;
-      clientSet[client.id].clientConfig.channel = subscriptions[0].topic;
-      // adding client topic to the end of
-      clientSet[client.id].clientConfig.channelSending =
-        subscriptions[0].topic +
-        "/client";
-    } else {
-      console.log("Client with id: " + client.id + " already exist");
     }
 
-    console.log(clientSet[client.id]);
+    clientSet[client.id].clientConfig.topic = subscriptions[0].topic;
+    // adding client topic to the end of
+    clientSet[client.id].clientConfig.channelSending =
+      subscriptions[0].topic + "/client";
+
+    clientSet[client.id].subscribeTopic(subscriptions[0].topic);
+
+    console.log(clientSet[client.id].clientConfig);
     console.log("subscribe from client: ", subscriptions, client.id);
   }
 });
