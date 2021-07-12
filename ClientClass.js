@@ -1,11 +1,6 @@
 var mqtt = require("mqtt");
 var aedes = require("./aedes.js");
-var {
-  mainfluxHost,
-  defaultUserName,
-  defaultPassword,
-  defaultChannel,
-} = require("./config/config.js");
+var { brokerHost } = require("./config/config.js");
 
 class Client {
   constructor(clientConfig) {
@@ -17,18 +12,14 @@ class Client {
     var self = this;
     var options = {
       clientId: this.clientConfig.clientId,
-      // username: this.clientConfig.username,
-      // password: this.clientConfig.password,
       reconnectPeriod: 1000,
       clean: true,
       encoding: "utf8",
     };
-    this.client = mqtt.connect(mainfluxHost, options);
+    this.client = mqtt.connect(brokerHost, options);
 
     this.client.on("connect", function () {
       self.client.subscribe(self.clientConfig.topic);
-
-      // self.client.publish(self.clientConfig.topic, "Hello from client A");
 
       console.log("Client A connected to mainflux");
     });

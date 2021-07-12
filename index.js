@@ -2,7 +2,6 @@ require("dotenv").config();
 var aedes = require("./aedes.js");
 var server = require("net").createServer(aedes.handle);
 var Client = require("./ClientClass.js");
-var { setKeyAndValue, getValueByKey } = require("./db.js");
 
 var { adapterMqttSport } = require("./config/config.js");
 
@@ -11,19 +10,6 @@ var {
   defaultPassword,
   defaultChannel,
 } = require("./config/config.js");
-
-// (async (key) => {
-//   await setKeyAndValue("361581dc-2552-4fe9-8016-2e5940c5ff8c", {
-//     clientId: "394d1824-e86d-429a-9213-be9b10a82f3b",
-//     username: "394d1824-e86d-429a-9213-be9b10a82f3b",
-//     password: "c46e7735-d5dc-4346-aa00-21177795b008",
-//     topic: "/channels/cd0d0307-9039-4a13-adb3-31d6d67a4787/messages",
-//     channelClientSub: defaultChannel + "/h/sub",
-//     channelClientPub: defaultChannel + "/h/pub",
-//   });
-//   const res = await getValueByKey("361581dc-2552-4fe9-8016-2e5940c5ff8c");
-//   console.log(res);
-// })();
 
 let clientSet = {};
 
@@ -44,16 +30,10 @@ aedes.on("publish", function (packet, client) {
 
 aedes.on("subscribe", async function (subscriptions, client) {
   if (client) {
-    let clientConfigRes = await getValueByKey(client.id.substring(0, 36)); // query database ra clientConfig -> truyen vao constructor
-
-    if (clientConfigRes == null) {
-      clientConfigRes = {
-        clientId: client.id,
-        topic: subscriptions[0].topic,
-        // username: defaultUserName,
-        // password: defaultPassword,
-      };
-    }
+    clientConfigRes = {
+      clientId: client.id,
+      topic: subscriptions[0].topic,
+    };
 
     if (!clientSet.hasOwnProperty(client.id)) {
       let newClient = new Client(clientConfigRes);
